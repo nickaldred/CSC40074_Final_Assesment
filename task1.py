@@ -25,7 +25,7 @@ class Graph:
         self.V = num
         self.graph = [None] * self.V
 
-    # Add edges
+
     def add_edge(self, s, d, weight) -> None:
         """
         Adds an edge to the graph by creating a link list node and
@@ -46,7 +46,7 @@ class Graph:
         node.next = self.graph[d]
         self.graph[d] = node
 
-    # Print the graph
+
     def print_agraph(self) -> None:
         """
         Prints the graph in a adjacency list format.
