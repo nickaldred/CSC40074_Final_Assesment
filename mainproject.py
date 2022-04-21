@@ -47,7 +47,12 @@ class MainProject(Graph, Credential):
 
 
     def menu_choice(self, menu_input):
-        """Allows the user to make a choice from the menu by taking an input"""
+        """
+        Allows the user to make a choice from the menu by taking an input
+        Input:
+        menu_input: int between 1-4 
+        
+        """
 
         menuchoice = True
         #While loop to keep the program running untill the user decides to exit.
