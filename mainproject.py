@@ -8,7 +8,7 @@ class MainProject(Graph, Credential):
     def __init__(self) -> None:
         pass
 
-    def startProgram(self) -> None:
+    def login(self) -> None:
         """
         Start the program and displays the log in terminal.
         
@@ -22,13 +22,13 @@ class MainProject(Graph, Credential):
         print(username, password)
 
         try:
-            program.menuDisplay()
+            program.showFunctionality()
 
         except:
             raise Exception("Error with menu")
 
 
-    def menuDisplay(self) -> None:
+    def showFunctionality(self) -> None:
         """
         Displays the menu for the functionality of the program
         """
@@ -41,12 +41,12 @@ class MainProject(Graph, Credential):
         menu_input = input("Please enter your choice from the menu: ") 
 
         try: 
-            self.menuChoice(menu_input)
+            self.menu_choice(menu_input)
         except:
             raise Exception("Error with menu choice")
 
 
-    def menuChoice(self, menu_input):
+    def menu_choice(self, menu_input):
         """Allows the user to make a choice from the menu by taking an input"""
 
         menuchoice = True
@@ -72,5 +72,5 @@ class MainProject(Graph, Credential):
 
 if __name__ == "__main__":
     program = MainProject()
-    program.startProgram()
+    program.login()
 
