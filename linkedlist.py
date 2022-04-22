@@ -68,7 +68,7 @@ class LinkedList:
         temp.next = None
         temp.next = next
 
-    def search(self, key) -> None:
+    def search(self, key, type) -> None:
         """
         Searches for an element in a linked list
 
@@ -77,8 +77,11 @@ class LinkedList:
         current = self.head
 
         while current is not None:
-            if current.item == key:
-                return True
+            if type == "item" and current.item == key:
+                return current.id
+
+            if type == "id" and current.id == key:
+                return current.item
 
             current = current.next
 
