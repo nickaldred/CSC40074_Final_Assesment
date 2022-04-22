@@ -104,12 +104,13 @@ class Credential():
         ninth_pass.next = tenth_pass
 
 
+#Code used to test credential class
 
-cred = Credential()
+#cred = Credential()
 
-cred.create_link_lists()
+#cred.create_link_lists()
 
-print(cred.validate("rhodarepor", "baseball"))
+#print(cred.validate("rhodarepor", "baseball"))
 
 # print(cred.username_list.search("ritabook", "item"))
 # print(cred.password_list.search(2, "id"))
