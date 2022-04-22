@@ -23,13 +23,19 @@ class LinkedList:
         print("")
 
 
-    def insert_at_end(self, new_data) -> None:
+    def insert_at_end(self, log_in_id, new_data) -> None:
         """
         Appends element to the linked list.
 
+        Input:
+        log_in_id: int - id of new user or password - username and password id
+                         must match.
+
+        new_data: str - username or password to be stored in new node
+
         """
 
-        new_node = Node(new_data)
+        new_node = Node(log_in_id, new_data)
 
         if self.head is None:
             self.head = new_node
@@ -45,6 +51,9 @@ class LinkedList:
     def delete_node(self, position) -> None:
         """
         Deletes an element from the list at a particular position
+
+        Input:
+        posisition: Int
         
         """
 
@@ -68,19 +77,25 @@ class LinkedList:
         temp.next = None
         temp.next = next
 
-    def search(self, key, type) -> None:
+    def search(self, key, search_type) -> None:
         """
         Searches for an element in a linked list
+        
+        Input:
+        Key: int or str depending on type - Value to be searched for.
+        Type: str - searchs for different types of data depending on value.
+                    "item" - searchs for value in node, usually username
+                    "id" - searchs for id of node
 
         """
 
         current = self.head
 
         while current is not None:
-            if type == "item" and current.item == key:
+            if search_type == "item" and current.item == key:
                 return current.id
 
-            if type == "id" and current.id == key:
+            if search_type == "id" and current.id == key:
                 return current.item
 
             current = current.next
