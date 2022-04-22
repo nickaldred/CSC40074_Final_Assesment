@@ -1,5 +1,3 @@
-import sys
-
 from credential import Credential
 from graph import Graph
 from credential import Credential
@@ -46,7 +44,7 @@ class MainProject(Graph, Credential):
             raise Exception("Error with menu choice")
 
 
-    def menu_choice(self, menu_input):
+    def menu_choice(self, menu_input) -> None:
         """
         Allows the user to make a choice from the menu by taking an input
         Input:
