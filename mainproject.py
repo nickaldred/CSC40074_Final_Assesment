@@ -12,18 +12,24 @@ class MainProject(Graph, Credential):
         
         """
 
+        #Create username and password linked lists using inherited method
+        self.create_link_lists()
+
         #Log in terminal and user input
         print("Welcome to the program, please enter your login details:")
         username = input("username: ")
         password = input("Password: ")
 
-        print(username, password)
+        #validate username and password using inherited method
+        if self.validate(username, password):
 
-        try:
-            program.showFunctionality()
+            try:
+                program.showFunctionality()
 
-        except:
-            raise Exception("Error with menu")
+            except:
+                raise Exception("Error with menu")
+        else:
+            print("Incorrect username or password")
 
 
     def showFunctionality(self) -> None:
