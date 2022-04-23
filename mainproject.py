@@ -34,8 +34,15 @@ class MainProject(Graph, Credential):
 
     def showFunctionality(self) -> None:
         """
-        Displays the menu for the functionality of the program
+        Displays a list of citys & the menu for the functionality of the 
+        program
         """
+        #Create city network graph and then print a list of the citys.
+        graph = Graph()
+        graph.create_city_graph()
+        graph.print_city_list()
+
+        #Displays Menu
         print("\nMenu:")
         print("1. Searching a city from the current city")
         print("2. The minimum distance between two cities")
