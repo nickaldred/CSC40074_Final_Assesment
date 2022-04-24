@@ -4,7 +4,7 @@ from credential import Credential
 
 class MainProject(Graph, Credential):
     def __init__(self) -> None:
-        self.graph = Graph()
+        self.graph = Graph(11)
 
     def login(self) -> None:
         """
@@ -40,6 +40,7 @@ class MainProject(Graph, Credential):
         #Create city network graph and then print a list of the citys.
 
         self.graph.create_city_graph()
+        self.graph.create_city_matrix()
         self.graph.print_city_list()
 
         #Displays Menu
@@ -71,7 +72,7 @@ class MainProject(Graph, Credential):
             if int(menu_input) == 1:
                 menu_input = self.search_city()
             elif int(menu_input) == 2:
-                pass
+                menu_input = self.find_min_distance_interface()
             elif int(menu_input) == 3:
                 pass
             elif int(menu_input) == 4:
@@ -129,6 +130,51 @@ class MainProject(Graph, Credential):
             return(0)
         else:
             return(1)
+
+
+    def find_min_distance_interface(self) -> int:
+        """
+        Allows the user to find the minimum distance between two given
+        citys. 
+
+        Returns:
+        Int = Int which decides what menu option to use from menu_choice 
+        
+        """
+
+        #Takes the users input via keybaord entry
+        source = input("\nPlease enter source city: ")
+        destination = input("Please enter destination city: ")
+        
+        #Searchs the graph make sure the source and destination
+        #input entered is a valid vertex
+        if self.graph.search_vertex(source) == False:
+            (print("Source city doesnt exist, please try again"))
+            return(2)
+        
+        elif self.graph.search_vertex(destination) == False:
+            (print("Destination city doesnt exist, please try again"))
+            return(2)
+
+        else:
+            #Implements find_min_distance and Dijkstra’s method to find
+            #the shortest distance between two vertices.
+            distance = self.graph.find_min_distance(source, destination)
+            print(f"\nSource: {source}, Destination: {destination}",
+                    f" --> {distance}")
+            self.graph.visited = []
+
+        
+
+        #Allows the user to do another search or exit the feature.
+        exit_log = input("\nEnter C to continue or Q to Exit: ")
+        if exit_log == "q" or exit_log == "Q":
+            return(0)
+        else:
+            return(2)
+
+
+
          
 
   
