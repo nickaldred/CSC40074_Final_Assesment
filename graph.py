@@ -1,14 +1,21 @@
+from queue import PriorityQueue
+
 
 class Graph():
     """
     Holds all the methods to create and tranverse the city graph.
 
     """
-    def __init__ (self) -> None:
-        self.graph = {}
+    def __init__ (self, size) -> None:
+        self.graph = {}  #create empty adjacency list
         self.vertices_no = 0
+        self.adjMatrix = [] #create empty adjacency matrix
+        self.visited = [] #list for visited vertices for Dijkstra’s algorithm
+        self.size = size #Amount of vertices in graph
+        for i in range(size):
+            self.adjMatrix.append([-1 for i in range(size)])
 
-    # Add a vertex to the dictionary
+   
     def add_vertex(self, v) -> None:
         """
         Adds a vertex to the adjacency list dictionary.
@@ -26,7 +33,7 @@ class Graph():
     
     def add_edge(self, v1, v2, e) -> None:
         """
-        Creates an edge between the given vertex's v1 and v2
+        Creates an edge adjacency list between the given vertices v1 and v2.
         v1 = int or str - 1st vertex
         v2 = int or str - 2nd vertex
         e = int -  edge weight
@@ -45,6 +52,51 @@ class Graph():
 
             temp = [v1, e]
             self.graph[v2].append(temp)
+
+    def add_edge_matrix(self, v1, v2, w) -> None:
+        """
+        Creates an edge in the adjacency matrix between the two 
+        given vertices with the weight provided.
+
+        v1 = int or str - 1st vertex
+        v2 = int or str - 2nd vertex
+        e = int -  edge weight
+
+        """
+        v1 = self.convertLetter(v1)
+        v2 = self.convertLetter(v2)
+        if v1 == v2:
+            print("Same vertex %d and %d" % (v1, v2))
+        self.adjMatrix[v1][v2] = w
+        self.adjMatrix[v2][v1] = w 
+
+
+    def convertNo(self, num) -> str: 
+        """
+        Converts a number between 0-25 into a capital character from the 
+        alphabet.
+
+        Input:
+        Int - "1"
+
+        Output:
+        Str - "B"
+        """
+        return(chr(num+65))
+
+
+    def convertLetter(self, letter) -> int:
+        """
+        Converts a letter into a number between 0-25 for use in the 
+        adjacency matrix.
+
+        Input:
+        Letter - str - 'A'
+
+        Returns:
+        Int - '0'
+        """
+        return(ord(letter)-65)   
 
 
     def print_formatted_graph(self) -> None:
@@ -116,8 +168,24 @@ class Graph():
         self.add_edge('I', 'J', 5)
         self.add_edge('K', 'J', 37)
 
+    def create_city_matrix(self) -> None:
+        self.add_edge_matrix('A', 'C', 15)
+        self.add_edge_matrix('A', 'G', 11)
+        self.add_edge_matrix('A', 'B', 2)
+        self.add_edge_matrix('B', 'F', 6)
+        self.add_edge_matrix('F', 'H', 1)
+        self.add_edge_matrix('F', 'E', 5)
+        self.add_edge_matrix('C', 'D', 18)
+        self.add_edge_matrix('B', 'D', 5)
+        self.add_edge_matrix('G', 'H', 3)
+        self.add_edge_matrix('D', 'E', 6)
+        self.add_edge_matrix('D', 'K', 11)
+        self.add_edge_matrix('E', 'K', 12)
+        self.add_edge_matrix('E', 'I', 13)
+        self.add_edge_matrix('I', 'J', 5)
+        self.add_edge_matrix('K', 'J', 37)
 
-    def bfs(self, node, key):
+    def bfs(self, node, key) -> bool:
         """
         Performs a breadth-first search on the stored city graph using
         a provided starting node and search key.
@@ -125,6 +193,9 @@ class Graph():
         input:
         node - int or str - Starting node for search.
         key - int or str - Node to searched for
+
+        Output:
+        Bool - Idicates whether the node was found.
 
         """
         visited = [] # List to keep track of visited nodes.
@@ -146,7 +217,7 @@ class Graph():
 
 
 
-    def dfs(self, node, key, visited):
+    def dfs(self, node, key, visited) -> bool:
         """
         Performs a depth-first search on the stored city graph using
         a provided starting node and search key.
@@ -155,6 +226,9 @@ class Graph():
         node - int or str - Starting node for search.
         key - int or str - Node to searched for
         visited - empty list - Empty list to store visted nodes.
+
+        Output:
+        Bool - Idicates whether the node was found.
 
         """
         if key in visited:
@@ -171,8 +245,60 @@ class Graph():
         return(False)
 
 
+         
+
+    def dijkstra(self, start_vertex) -> dict:
+        """
+        Performs Dijkstra's algorithm using the given starting vertex
+        on the city network graph stored in the object.
+
+        Input:
+        Int - starting vertex in graph
+
+        Output:
+        Dict - list of minimum distances between starting vertex and other
+               vertices.
+        """
+        D = {v:float('inf') for v in range(self.size)}
+        D[start_vertex] = 0
+    
+        pq = PriorityQueue()
+        pq.put((0, start_vertex))
+    
+        while not pq.empty():
+            (dist, current_vertex) = pq.get()
+            self.visited.append(current_vertex)
+    
+            for neighbor in range(self.size):
+                if self.adjMatrix[current_vertex][neighbor] != -1:
+                    distance = self.adjMatrix[current_vertex][neighbor]
+                    if neighbor not in self.visited:
+                        old_cost = D[neighbor]
+                        new_cost = D[current_vertex] + distance
+                        if new_cost < old_cost:
+                            pq.put((new_cost, neighbor))
+                            D[neighbor] = new_cost
+        return D
 
 
+
+    def find_min_distance(self, source, destination) -> int:
+        """
+        Finds the minimum distance from the source to all other nodes
+        using jiskstra's algorithm. Then returns the minimum weight distance 
+        for the given destination node.
+
+        Input:
+        source: str - representing city - 'A'
+        destination: - str - representing city - 'A'
+
+        Output:
+        Int - Minimum weight distance between the given source and destination.
+        """
+
+        d = self.dijkstra(self.convertLetter(source))
+        destination = self.convertLetter(destination)
+        return(d[destination])
 
 
 
@@ -181,12 +307,25 @@ class Graph():
 # denotes the edge weight.
 #print ("Internal representation: ", graph.graph)
 
-#graph = Graph()
+# graph = Graph(11)
 
-#graph.create_city_graph()
+# graph.create_city_graph()
+# graph.create_city_matrix()
+# # D = graph.dijkstra(0)
 
-#print(graph.search_vertex('A'))
+# # print(D)
+
+# # for vertex in range(len(D)):
+# #     print("Distance from vertex A to vertex", graph.convertNo(vertex), "is", D[vertex])
+
+# print(graph.find_min_distance("J", "C"))
+
+# #print(graph.search_vertex('A'))
 #graph.print_formatted_graph()
+
+# graph.covert_to_matrix()
+
+# graph.printMatrix()
 
 #print(graph.bfs("A", "a"))
 
