@@ -4,7 +4,13 @@ from credential import Credential
 
 class MainProject(Graph, Credential):
     def __init__(self) -> None:
-        self.graph = Graph(11)
+        self.graph = {}  #create empty adjacency list
+        self.vertices_no = 0
+        self.adjMatrix = [] #create empty adjacency matrix
+        self.visited = [] #list for visited vertices for Dijkstra’s algorithm
+        self.size = 11 #Amount of vertices in graph
+        for i in range(self.size):
+            self.adjMatrix.append([-1 for i in range(self.size)])
 
     def login(self) -> None:
         """
@@ -39,9 +45,9 @@ class MainProject(Graph, Credential):
         """
         #Create city network graph and then print a list of the citys.
 
-        self.graph.create_city_graph()
-        self.graph.create_city_matrix()
-        self.graph.print_city_list()
+        self.create_city_graph()
+        self.create_city_matrix()
+        self.print_city_list()
 
         #Displays Menu
         print("\nMenu:")
@@ -100,7 +106,7 @@ class MainProject(Graph, Credential):
         destination = input("Please enter destination city: ")
         
         #Searchs the graph make sure the source input entered is a valid vertex
-        if self.graph.search_vertex(source) == False:
+        if self.search_vertex(source) == False:
             (print("Source city doesnt exist, please try again"))
             return(1)
 
@@ -109,9 +115,9 @@ class MainProject(Graph, Credential):
 
         if search_type == "dfs" or search_type == "DFS":
             visited = set() # Set to keep track of visited nodes.
-            result = self.graph.dfs(source, destination, visited)
+            result = self.dfs(source, destination, visited)
         elif search_type == "BFS" or search_type == "bfs":
-            result = self.graph.bfs(source, destination)
+            result = self.bfs(source, destination)
         else:
             print("\nPlease enter a correct search type")
             return(1)
@@ -124,12 +130,8 @@ class MainProject(Graph, Credential):
             print(f"\nSource: {source}, Destination: {destination}",
                     " --> Unreachable")
 
-        #Allows the user to do another search or exit the search feature.
-        exit_log = input("\nEnter C to continue or Q to Exit: ")
-        if exit_log == "q" or exit_log == "Q":
-            return(0)
-        else:
-            return(1)
+        #Displays exit menu
+        return(self.exit_menu(1))
 
 
     def find_min_distance_interface(self) -> int:
@@ -148,32 +150,44 @@ class MainProject(Graph, Credential):
         
         #Searchs the graph make sure the source and destination
         #input entered is a valid vertex
-        if self.graph.search_vertex(source) == False:
+        if self.search_vertex(source) == False:
             (print("Source city doesnt exist, please try again"))
             return(2)
         
-        elif self.graph.search_vertex(destination) == False:
+        elif self.search_vertex(destination) == False:
             (print("Destination city doesnt exist, please try again"))
             return(2)
 
         else:
             #Implements find_min_distance and Dijkstra’s method to find
             #the shortest distance between two vertices.
-            distance = self.graph.find_min_distance(source, destination)
+            distance = self.find_min_distance(source, destination)
             print(f"\nSource: {source}, Destination: {destination}",
                     f" --> {distance}")
-            self.graph.visited = []
+            self.visited = []
 
         
+        #Displays exit menu
+        return(self.exit_menu(2))
 
-        #Allows the user to do another search or exit the feature.
-        exit_log = input("\nEnter C to continue or Q to Exit: ")
+
+    def exit_menu(self, exit_menu_choice) -> int:
+        """
+        Allows the user to repeat function or exit the feature.
+        
+        Input:
+        exit_menu_choice: int - menu choice to repeat 
+
+        Output:
+        Int: to determine if repeat function or exit to menu
+        
+        """
+
+        exit_log = input("\nEnter any key to continue or Q to Exit: ")
         if exit_log == "q" or exit_log == "Q":
             return(0)
         else:
-            return(2)
-
-
+            return(exit_menu_choice)
 
          
 
