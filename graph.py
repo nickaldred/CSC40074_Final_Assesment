@@ -199,17 +199,23 @@ class Graph():
 
         """
         visited = [] # List to keep track of visited nodes.
-        queue = []     #Initialize a queue
+        queue = []     #Initialize a queue.
+
+        #Put starting node in the visited list and queue.
         visited.append(node)
         queue.append(node)
 
         while queue:
             s = queue.pop(0) 
 
+            #Iterates over each neighbor of the node in the graph.
             for neighbour in self.graph[s[0]]:
+                #Checks if neighbor is not in visited
                 if neighbour not in visited:
+                    #Checks if neighbor is equal to search key.
                     if neighbour[0] == key:
                         return(True)
+                    #Add neighbor to Queue and visited.
                     visited.append(neighbour)
                     queue.append(neighbour)
         return(False)
@@ -231,17 +237,21 @@ class Graph():
         Bool - Idicates whether the node was found.
 
         """
+        #If search key is in visited return true
         if key in visited:
             return(True)
         if node not in visited:
 
+            #Add current node to visited
             visited.add(node)
             for neighbour in self.graph[node]:
-
+                #Perform DFS on neighbor (Recursion)
                 self.dfs(neighbour[0], key, visited)
+
+                #If search key is in visited return true
                 if key in visited:
                     return(True)
-        
+
         return(False)
 
 
@@ -259,23 +269,35 @@ class Graph():
         Dict - list of minimum distances between starting vertex and other
                vertices.
         """
+
+        #List to keep shortest paths, all entries initialised to infinity
         D = {v:float('inf') for v in range(self.size)}
         D[start_vertex] = 0
-    
+
+        #Create a priority queue
         pq = PriorityQueue()
+        #Put the starting vertex in the priority queue
         pq.put((0, start_vertex))
-    
+
+        #while the priority queue is not empty analyse each vertex
         while not pq.empty():
             (dist, current_vertex) = pq.get()
+            #set current vertex to visited
             self.visited.append(current_vertex)
-    
+
+            #Iterate over each of the current vertices neighbors
             for neighbor in range(self.size):
                 if self.adjMatrix[current_vertex][neighbor] != -1:
+                    #Find the distance between current vertex & neighbor
                     distance = self.adjMatrix[current_vertex][neighbor]
+                    #If not visited compare old cost to new cost 
                     if neighbor not in self.visited:
+                        #Find old cost and new cost
                         old_cost = D[neighbor]
                         new_cost = D[current_vertex] + distance
                         if new_cost < old_cost:
+                            #If new cost lower the neighbor and its cost in the
+                            #priority queue.
                             pq.put((new_cost, neighbor))
                             D[neighbor] = new_cost
         return D
@@ -285,7 +307,7 @@ class Graph():
     def find_min_distance(self, source, destination) -> int:
         """
         Finds the minimum distance from the source to all other nodes
-        using jiskstra's algorithm. Then returns the minimum weight distance 
+        using Diskstra's algorithm. Then returns the minimum weight distance 
         for the given destination node.
 
         Input:
@@ -301,13 +323,92 @@ class Graph():
         return(d[destination])
 
 
+    def prims(self) -> list:
+        """
+        Finds the minimum spanning tree from the adjacency matrix stored in the
+        object using prims algorithm. Returns the result in a list matrix.
+
+        Output:
+        List - Minimum spanning tree
+        
+        """
+        # Define infinity variable
+        infinity = float('inf')
+        
+        # Selected node list
+        selected_nodes = [False for node in range(self.size)]
+
+        # MST matrix
+        result = [[0 for column in range(self.size)] 
+                    for row in range(self.size)]
+        
+        index = 0
+        
+        # Keep looking while there are nodes that are not included in the MST.
+        while(False in selected_nodes):
+
+            # Use inifinity as minimum
+            minimum = infinity
+
+            # Start Node
+            start = 0
+
+            # End Node
+            end = 0
+
+            for i in range(self.size):
+                # Inspect node if its part of the MST
+                if selected_nodes[i]:
+                    for j in range(self.size):
+                        # If Node has a path to the ending Node AND is not already in the MST
+                        if (self.adjMatrix[i][j]>0 and not selected_nodes[j] ):  
+                            # If the weighted path is less than the minimum.
+                            if self.adjMatrix[i][j] < minimum:
+                                # Sets new minimum weight and the starting and end vertex.
+                                minimum = self.adjMatrix[i][j]
+                                start, end = i, j
+            
+            # Ending vertex is already selected.
+            selected_nodes[end] = True
+
+            # Fill the MST Adjacency Matrix.
+            result[start][end] = minimum
+            
+            if minimum == infinity:
+                result[start][end] = 0
+
+            index += 1
+            
+            result[end][start] = result[start][end]
+
+        return(result)
+
+
+    def print_mst(self, mst) -> None:
+        """
+        Prints the minimum spanning inputted in a readable format for the user.
+
+        Input:
+        List matrix - lists within a list.
+
+        Output:
+        None
+        """
+
+        # Loops through MST list and the item in the MST and prints values.
+        for i in range(len(mst)):
+            for j in range(0+i, len(mst)):
+                if mst[i][j] != 0:
+                    print(f"{i} - {j}: {mst[i][j]}")
+
+
 
 #graph.print_graph()
 # Reminder: the second element of each list inside the dictionary
 # denotes the edge weight.
 #print ("Internal representation: ", graph.graph)
 
-# graph = Graph(11)
+graph = Graph(11)
 
 # graph.create_city_graph()
 # graph.create_city_matrix()
@@ -336,4 +437,7 @@ class Graph():
 
 # print ("Internal representation: ", graph.graph)
 
-
+graph.create_city_matrix()
+# # D = graph.dijkstra(0)
+result = graph.prims()
+graph.print_mst(result)
