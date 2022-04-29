@@ -4,7 +4,7 @@ from credential import Credential
 
 class MainProject(Graph, Credential):
     def __init__(self) -> None:
-        self.graph = {}  #create empty adjacency list.
+        self.graph = {}  #Create empty adjacency list.
         self.vertices_no = 0
         self.adj_matrix = [] #Create empty adjacency matrix.
         self.krusk_graph = [] #Create an empty list for kruskals graph.
