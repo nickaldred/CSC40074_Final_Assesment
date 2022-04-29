@@ -3,6 +3,11 @@ from graph import Graph
 from credential import Credential
 
 class MainProject(Graph, Credential):
+    """
+    Contains all the methods to run the main program. Inherits from
+    Credential() and Graph() classes. 
+    
+    """
     def __init__(self) -> None:
         self.graph = {}  #Create empty adjacency list.
         self.vertices_no = 0
