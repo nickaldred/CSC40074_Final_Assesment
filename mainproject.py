@@ -1,16 +1,20 @@
 from credential import Credential
 from graph import Graph
 from credential import Credential
+import sys
 
 class MainProject(Graph, Credential):
     def __init__(self) -> None:
         self.graph = {}  #create empty adjacency list
         self.vertices_no = 0
         self.adjMatrix = [] #create empty adjacency matrix
+        self.kGraph = [] #create an empty list for kruskals graph
         self.visited = [] #list for visited vertices for Dijkstra’s algorithm
         self.size = 11 #Amount of vertices in graph
+        #Sets all values in adjacency matrix to -1
         for i in range(self.size):
             self.adjMatrix.append([-1 for i in range(self.size)])
+
 
     def login(self) -> None:
         """
@@ -43,28 +47,33 @@ class MainProject(Graph, Credential):
         Displays a list of citys & the menu for the functionality of the 
         program
         """
-        #Create city network graph and then print a list of the citys.
+        #Creates the various interpretations of the graphs needed for the 
+        #algorithms
 
         self.create_city_graph()
         self.create_city_matrix()
         self.print_city_list()
+        self.create_krusk_graph()
 
         #Displays Menu
-        print("\nMenu:")
-        print("1. Searching a city from the current city")
-        print("2. The minimum distance between two cities")
-        print("3. Finding the mininum spanning tree")
-        print("4. Exit program")
-        print("\n")
-        menu_input = input("Please enter your choice from the menu: ") 
+        #While loop to keep the program running untill the user decides to exit.
+        menuchoice = True
+        while menuchoice == True:
+            print("\nMenu:")
+            print("1. Searching a city from the current city")
+            print("2. The minimum distance between two cities")
+            print("3. Finding the mininum spanning tree")
+            print("4. Exit program")
+            print("\n")
+            menu_input = input("Please enter your choice from the menu: ") 
 
-        try: 
-            self.menu_choice(menu_input)
-        except:
-            raise Exception("Error with menu choice")
+            try: 
+                menuchoice = self.menu_choice(menu_input)
+            except:
+                raise Exception("Error with menu choice")
 
 
-    def menu_choice(self, menu_input) -> None:
+    def menu_choice(self, menu_input) -> bool:
         """
         Allows the user to make a choice from the menu by taking an input
         Input:
@@ -72,32 +81,48 @@ class MainProject(Graph, Credential):
         
         """
 
-        menuchoice = True
-        #While loop to keep the program running untill the user decides to exit.
-        while menuchoice == True:
-            if int(menu_input) == 1:
-                menu_input = self.search_city()
-            elif int(menu_input) == 2:
-                menu_input = self.find_min_distance_interface()
-            elif int(menu_input) == 3:
-                pass
-            elif int(menu_input) == 4:
-                menuchoice = False
-            elif int(menu_input) == 0:
-                menuchoice = True
-                
-            else:
-                print("please enter a valid menu choice.")
-                menu_input = input("\nPlease enter your choice from the menu: ") 
+        #Decides what method to run based on users input
+        if int(menu_input) == 1:
+            return(self.search_city())
+        elif int(menu_input) == 2:
+            return(self.find_min_distance_interface())
+        elif int(menu_input) == 3:
+            return(self.display_mst_algos())
+        elif int(menu_input) == 4:
+            return(False)
+            
+        else:
+            print("please enter a valid menu choice.\n")
+            return(True)
 
 
-    def search_city(self) -> int:
+    def exit_menu(self) -> bool:
+        """
+        Allows the user to repeat function or exit the feature.
+        
+        Input:
+        exit_menu_choice: int - menu choice to repeat 
+
+        Output:
+        Boolean
+        
+        """
+
+        exit_log = input("\nEnter any key to continue or Q to Exit: ")
+        if exit_log == "q" or exit_log == "Q":
+            return(False)
+        else:
+            return(True)
+
+
+
+    def search_city(self) -> bool:
         """
         Allows the user to search the city graph using DFS or BFS
         from a source and destination entered via the keyboard.
 
         Returns:
-        Int = Int which decides what menu option to use from menu_choice 
+        Boolean
         
         """
 
@@ -131,16 +156,16 @@ class MainProject(Graph, Credential):
                     " --> Unreachable")
 
         #Displays exit menu
-        return(self.exit_menu(1))
+        return(self.exit_menu())
 
 
-    def find_min_distance_interface(self) -> int:
+    def find_min_distance_interface(self) -> bool:
         """
         Allows the user to find the minimum distance between two given
         citys. 
 
         Returns:
-        Int = Int which decides what menu option to use from menu_choice 
+        Boolean
         
         """
 
@@ -168,30 +193,21 @@ class MainProject(Graph, Credential):
 
         
         #Displays exit menu
-        return(self.exit_menu(2))
+        return(self.exit_menu())
 
-
-    def exit_menu(self, exit_menu_choice) -> int:
+    
+    def display_mst_algos(self) -> bool:
         """
-        Allows the user to repeat function or exit the feature.
-        
-        Input:
-        exit_menu_choice: int - menu choice to repeat 
+        Allows the user to run the spanning tree method which runs two threads.
+        One for Prim's algorithm and the other for Kruskal's algorithm. 
 
-        Output:
-        Int: to determine if repeat function or exit to menu
+        Returns:
+        Boolean
         
         """
-
-        exit_log = input("\nEnter any key to continue or Q to Exit: ")
-        if exit_log == "q" or exit_log == "Q":
-            return(0)
-        else:
-            return(exit_menu_choice)
-
-         
-
-  
+        self.spanningTree()
+        #Displays exit menu
+        return(self.exit_menu())
 
 
 if __name__ == "__main__":
