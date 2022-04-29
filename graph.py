@@ -1,4 +1,5 @@
 from queue import PriorityQueue
+import threading
 
 
 class Graph():
@@ -10,6 +11,7 @@ class Graph():
         self.graph = {}  #create empty adjacency list
         self.vertices_no = 0
         self.adjMatrix = [] #create empty adjacency matrix
+        self.kGraph = [] #create an empty list for kruskals graph
         self.visited = [] #list for visited vertices for Dijkstra’s algorithm
         self.size = size #Amount of vertices in graph
         for i in range(size):
@@ -53,6 +55,13 @@ class Graph():
             temp = [v1, e]
             self.graph[v2].append(temp)
 
+    def add_edge_kruskals(self, node1, node2, weight):
+        self.kGraph.append([self.convertLetter(node1), self.convertLetter(node2), weight])
+
+    def printting(self):
+        print(self.kGraph)
+
+
     def add_edge_matrix(self, v1, v2, w) -> None:
         """
         Creates an edge in the adjacency matrix between the two 
@@ -69,6 +78,8 @@ class Graph():
             print("Same vertex %d and %d" % (v1, v2))
         self.adjMatrix[v1][v2] = w
         self.adjMatrix[v2][v1] = w 
+
+    
 
 
     def convertNo(self, num) -> str: 
@@ -184,6 +195,23 @@ class Graph():
         self.add_edge_matrix('E', 'I', 13)
         self.add_edge_matrix('I', 'J', 5)
         self.add_edge_matrix('K', 'J', 37)
+
+    def create_krusk_graph(self) -> None:
+        self.add_edge_kruskals('A', 'C', 15)
+        self.add_edge_kruskals('A', 'G', 11)
+        self.add_edge_kruskals('A', 'B', 2)
+        self.add_edge_kruskals('B', 'F', 6)
+        self.add_edge_kruskals('F', 'H', 1)
+        self.add_edge_kruskals('F', 'E', 5)
+        self.add_edge_kruskals('C', 'D', 18)
+        self.add_edge_kruskals('B', 'D', 5)
+        self.add_edge_kruskals('G', 'H', 3)
+        self.add_edge_kruskals('D', 'E', 6)
+        self.add_edge_kruskals('D', 'K', 11)
+        self.add_edge_kruskals('E', 'K', 12)
+        self.add_edge_kruskals('E', 'I', 13)
+        self.add_edge_kruskals('I', 'J', 5)
+        self.add_edge_kruskals('K', 'J', 37)
 
     def bfs(self, node, key) -> bool:
         """
@@ -302,8 +330,6 @@ class Graph():
                             D[neighbor] = new_cost
         return D
 
-
-
     def find_min_distance(self, source, destination) -> int:
         """
         Finds the minimum distance from the source to all other nodes
@@ -323,13 +349,11 @@ class Graph():
         return(d[destination])
 
 
-    def prims(self) -> list:
+    def prims_mst(self, lock) -> None:
         """
         Finds the minimum spanning tree from the adjacency matrix stored in the
-        object using prims algorithm. Returns the result in a list matrix.
-
-        Output:
-        List - Minimum spanning tree
+        object using Prim's algorithm. Prints the minimum spanning tree in a 
+        readable format.
         
         """
         # Define infinity variable
@@ -360,11 +384,13 @@ class Graph():
                 # Inspect node if its part of the MST
                 if selected_nodes[i]:
                     for j in range(self.size):
-                        # If Node has a path to the ending Node AND is not already in the MST
+                        # If Node has a path to the ending Node AND is not 
+                        # already in the MST
                         if (self.adjMatrix[i][j]>0 and not selected_nodes[j] ):  
                             # If the weighted path is less than the minimum.
                             if self.adjMatrix[i][j] < minimum:
-                                # Sets new minimum weight and the starting and end vertex.
+                                # Sets new minimum weight and the starting and 
+                                # end vertex.
                                 minimum = self.adjMatrix[i][j]
                                 start, end = i, j
             
@@ -381,63 +407,128 @@ class Graph():
             
             result[end][start] = result[start][end]
 
-        return(result)
-
-
-    def print_mst(self, mst) -> None:
-        """
-        Prints the minimum spanning inputted in a readable format for the user.
-
-        Input:
-        List matrix - lists within a list.
-
-        Output:
-        None
-        """
-
+        total = total = 0
+        mst = result
+        #Locking
+        lock.acquire()
         # Loops through MST list and the item in the MST and prints values.
+        print("\nPrim's Minimum Spanning Tree:\n")
         for i in range(len(mst)):
             for j in range(0+i, len(mst)):
                 if mst[i][j] != 0:
-                    print(f"{i} - {j}: {mst[i][j]}")
+                    print(f"{self.convertNo(i)} - {self.convertNo(j)}:"
+                     f"{mst[i][j]}")
+                    total = total + mst[i][j]
+        print(f"Total weight of MST: {total}")
+        #Unlocking
+        lock.release()
 
 
+    def find_subtree(self, parent, i) -> int:
+        """
+        Using recursion searches the parrent array and finds the root node 
+        of a subtree cotaining node "i"
 
-#graph.print_graph()
-# Reminder: the second element of each list inside the dictionary
-# denotes the edge weight.
-#print ("Internal representation: ", graph.graph)
+        Output
+        Int - root node
 
-graph = Graph(11)
+        """
+        if parent[i] == i:
+            return i
+        return self.find_subtree(parent, parent[i])
 
-# graph.create_city_graph()
-# graph.create_city_matrix()
-# # D = graph.dijkstra(0)
+    # Connects subtrees containing nodes `x` and `y`
+    def connect_subtrees(self, parent, subtree_sizes, x, y) -> None:
+        """
+        Connects two subtrees with nodes cotaining 'x' and 'y'
 
-# # print(D)
+        """
+        #Finds the subtrees of each node.
+        xroot = self.find_subtree(parent, x)
+        yroot = self.find_subtree(parent, y)
 
-# # for vertex in range(len(D)):
-# #     print("Distance from vertex A to vertex", graph.convertNo(vertex), "is", D[vertex])
+        #Compares the sizes and connects smaller subtree to larger one.
+        if subtree_sizes[xroot] < subtree_sizes[yroot]:
+            parent[xroot] = yroot
+        elif subtree_sizes[xroot] > subtree_sizes[yroot]:
+            parent[yroot] = xroot
+        else:
+            parent[yroot] = xroot
+            subtree_sizes[xroot] += 1
 
-# print(graph.find_min_distance("J", "C"))
 
-# #print(graph.search_vertex('A'))
-#graph.print_formatted_graph()
+    def kruskals_mst(self, lock) -> None:
+        """
+        Finds the minimum spanning tree using Kruskals alrogithm.
+        Uses a Lock to syncronise the thread and prints the minimum spanning
+        tree in a readable format.
+        """
+        #Initialises variables
+        result_tree = []
+        iterator = 0
+        no_edges = 0
+        parent = [] # Auxiliary array
+        subtree_sizes = [] # Auxiliary array
 
-# graph.covert_to_matrix()
+        # Uses weight to sorts the edges.
+        self.kGraph = sorted(self.kGraph, key=lambda item: item[2])
 
-# graph.printMatrix()
+        # Initialise parent and subtree array.
+        for node in range(self.size):
+            parent.append(node)
+            subtree_sizes.append(0)
 
-#print(graph.bfs("A", "a"))
+ 
+        # Number of MST edges is always (total edges - 1)
+        while no_edges < (self.size - 1):
+            # Pick edge with smallest weight.
+            node1, node2, weight = self.kGraph[iterator]
+            iterator = iterator + 1
 
-# visited = set() # Set to keep track of visited nodes.
-# print(graph.dfs("K", "A", visited, False))
+            #Finds the subtree
+            x = self.find_subtree(parent, node1)
+            y = self.find_subtree(parent, node2)
+            #adds the edge to the result tree if conditions are met.
+            if x != y:
+                no_edges = no_edges + 1
+                result_tree.append([node1, node2, weight])
+                self.connect_subtrees(parent, subtree_sizes, x, y)
+        #Locking
+        lock.acquire()
+        total = 0
+        # Print the resulting MST
+        print("\nKruskal's Minimum Spanning Tree:\n")
+        for node1, node2, weight in result_tree:
+            print(f"{self.convertNo(node1)} - {self.convertNo(node2)} - {weight}")
+            total = total + weight
 
-#graph.print_city_list()
+        print(f"Total weight of MST: {total}")
+        #Unlocking
+        lock.release()
 
-# print ("Internal representation: ", graph.graph)
 
-graph.create_city_matrix()
-# # D = graph.dijkstra(0)
-result = graph.prims()
-graph.print_mst(result)
+    def spanningTree(self) -> None:
+        """
+        Creates 2 threads one for Prim's algorithm and the other for Kruskal's
+        algorithm to find the minimum spanning tree. 
+        The 2 threads are run simultaneously and synchronised using
+        the Lock method to give a easily readable output for each of the
+        algorithms. 
+
+        """
+        #Creates a lock
+        lock = threading.Lock()
+
+        #Creates both threads passing the lock as an argument.
+        kruskals = threading.Thread(target=self.kruskals_mst, args = (lock,))
+        prims = threading.Thread(target=self.prims_mst, args=(lock,))
+
+        #Starts the threads
+        kruskals.start()
+        prims.start()
+        
+        #Wait until threads have finished their jobs.
+        kruskals.join()
+        prims.join()
+
+
