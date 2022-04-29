@@ -65,7 +65,7 @@ class Graph():
 
         """
 
-        #Add's the vertex's to the adjacency list.
+        #Add's the vertices to the adjacency list.
         self.add_vertex('A')
         self.add_vertex('B')
         self.add_vertex('C')
