@@ -1,13 +1,9 @@
 from linkedlist import LinkedList
 from linkedlist import Node
 
-
-
 class Credential():
     def __init__(self) -> None:
         pass
-
-
 
     def validate(self, username, password) -> bool:
         """
@@ -36,8 +32,6 @@ class Credential():
         
         else:
             return False
-
-        
 
 
     def create_link_lists(self) -> None:
@@ -103,14 +97,3 @@ class Credential():
         eigth_pass.next = ninth_pass
         ninth_pass.next = tenth_pass
 
-
-#Code used to test credential class
-
-#cred = Credential()
-
-#cred.create_link_lists()
-
-#print(cred.validate("rhodarepor", "baseball"))
-
-# print(cred.username_list.search("ritabook", "item"))
-# print(cred.password_list.search(2, "id"))
