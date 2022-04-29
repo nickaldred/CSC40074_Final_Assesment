@@ -7,23 +7,25 @@ class Credential():
 
     def validate(self, username, password) -> bool:
         """
-        Validates the supplied username and password by using linear search
-        against the 2 stored linked lists for username and password.
+        Validates the supplied username and password by using linear 
+        search against the 2 stored linked lists for username and 
+        password.
 
         Returns:
         Boolean type
         """
 
-        #Searchs username link list and saves the ID it finds, if nothing is
-        #found the id is set to False.
+        #Searchs username link list and saves the ID it finds, if 
+        #nothing is found the id is set to False.
         __valid_id = self.__username_list.search(username, "item")
         
         if __valid_id != False:
-            #If the username was found use the saved ID to find the password
-            #the password is then stored. 
+            #If the username was found use the saved ID to find the 
+            #corresponding password, the password is then stored. 
             __valid_pass = self.__password_list.search(__valid_id, "id")
 
-            #If supplied password and stored password match return True
+            #If supplied password and stored password match return 
+            #True.
             if __valid_pass == password:
                 return True
         
@@ -37,17 +39,18 @@ class Credential():
     def create_link_lists(self) -> None:
         """
         Creates 2 linked lists one for usernames and passwords.
-        Each linked list contains 10 manually inputter usernames and passwords
+        Each linked list contains 10 manually inputted usernames and 
+        passwords.
         """
         #Create both linked lists as private members.
         self.__username_list = LinkedList()
         self.__password_list = LinkedList()
     
-        #Set head of linked lists
+        #Set head of linked lists.
         self.__username_list.head = Node(1, "nickaldred")
         self.__password_list.head = Node(1, "football")
 
-        #Create rest of nodes for linked lists
+        #Create rest of nodes for linked lists.
         second_user = Node(2, "johnsmith")
         second_pass = Node(2, "golf")
 
@@ -75,7 +78,7 @@ class Credential():
         tenth_user = Node(10, "rhodareport")
         tenth_pass = Node(10, "baseball")
 
-        #Link each node in user linked list
+        #Link each node in user linked list.
         self.__username_list.head.next = second_user
         second_user.next = third_user
         third_user.next = fourth_user
@@ -86,7 +89,7 @@ class Credential():
         eigth_user.next = ninth_user
         ninth_user.next = tenth_user
 
-        #Link each node in password linked list
+        #Link each node in password linked list.
         self.__password_list.head.next = second_pass
         second_pass.next = third_pass
         third_pass.next = fourth_pass

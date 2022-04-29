@@ -8,14 +8,14 @@ class Graph():
 
     """
     def __init__ (self, size) -> None:
-        self.graph = {}  #create empty adjacency list
+        self.graph = {}  #Create empty adjacency list.
         self.vertices_no = 0
-        self.adjMatrix = [] #create empty adjacency matrix
-        self.kGraph = [] #create an empty list for kruskals graph
-        self.visited = [] #list for visited vertices for Dijkstra’s algorithm
-        self.size = size #Amount of vertices in graph
+        self.adj_matrix = [] #Create empty adjacency matrix.
+        self.krusk_graph = [] #Create an empty list for kruskals graph.
+        self.visited = [] #List for visited vertices for Dijkstra’s
+        self.size = size #Amount of vertices in graph.
         for i in range(size):
-            self.adjMatrix.append([-1 for i in range(size)])
+            self.adj_matrix.append([-1 for i in range(size)])
 
    
     def add_vertex(self, v) -> None:
@@ -35,16 +35,17 @@ class Graph():
     
     def add_edge(self, v1, v2, e) -> None:
         """
-        Creates an edge adjacency list between the given vertices v1 and v2.
+        Creates an edge adjacency list between the given vertices v1 
+        and v2.
         v1 = int or str - 1st vertex
         v2 = int or str - 2nd vertex
         e = int -  edge weight
         """
 
-        # Check if vertex v1 is valid
+        # Check if vertex v1 is valid.
         if v1 not in self.graph:
             print("Vertex ", v1, " does not exist.")
-        # Check if vertex v2 is valid 
+        # Check if vertex v2 is valid.
         elif v2 not in self.graph:
             print("Vertex ", v2, " does not exist.")
         else:
@@ -55,11 +56,18 @@ class Graph():
             temp = [v1, e]
             self.graph[v2].append(temp)
 
-    def add_edge_kruskals(self, node1, node2, weight):
-        self.kGraph.append([self.convertLetter(node1), self.convertLetter(node2), weight])
 
-    def printting(self):
-        print(self.kGraph)
+    def add_edge_kruskals(self, node1, node2, weight) -> None:
+        """
+        Creates an edge in the graph used for Kruskal's Algorithm.
+        
+        Input -
+        node1 - string - starting node
+        node2 - string - destination node
+        weight - int - weight of edge
+        """
+        self.krusk_graph.append([self.convert_letter(node1), 
+        self.convert_letter(node2), weight])
 
 
     def add_edge_matrix(self, v1, v2, w) -> None:
@@ -72,20 +80,20 @@ class Graph():
         e = int -  edge weight
 
         """
-        v1 = self.convertLetter(v1)
-        v2 = self.convertLetter(v2)
+        v1 = self.convert_letter(v1)
+        v2 = self.convert_letter(v2)
         if v1 == v2:
             print("Same vertex %d and %d" % (v1, v2))
-        self.adjMatrix[v1][v2] = w
-        self.adjMatrix[v2][v1] = w 
+        self.adj_matrix[v1][v2] = w
+        self.adj_matrix[v2][v1] = w 
 
     
 
 
-    def convertNo(self, num) -> str: 
+    def convert_no(self, num) -> str: 
         """
-        Converts a number between 0-25 into a capital character from the 
-        alphabet.
+        Converts a number between 0-25 into a capital character from 
+        the alphabet.
 
         Input:
         Int - "1"
@@ -96,7 +104,7 @@ class Graph():
         return(chr(num+65))
 
 
-    def convertLetter(self, letter) -> int:
+    def convert_letter(self, letter) -> int:
         """
         Converts a letter into a number between 0-25 for use in the 
         adjacency matrix.
@@ -112,7 +120,8 @@ class Graph():
 
     def print_formatted_graph(self) -> None:
         """
-        Prints the adjacency list dictionary in an adjacency list format.
+        Prints the adjacency list dictionary in an adjacency list 
+        format.
 
         """
 
@@ -133,7 +142,8 @@ class Graph():
 
     def search_vertex(self, key) -> bool:
         """
-        Searchs the graph with a given key to see a matching vertex exists.
+        Searchs the graph with a given key to see a matching vertex 
+        exists.
 
         """
         for vertex in self.graph:
@@ -144,7 +154,8 @@ class Graph():
 
     def create_city_graph(self) -> None:
         """
-        Creates a adjacency list graph using the data from the assessment brief.
+        Creates a adjacency list graph using the data from the 
+        assessment brief.
 
         """
 
@@ -162,7 +173,7 @@ class Graph():
         self.add_vertex('K')
 
         # Add the edges of the graph to the adjacency list with their 
-        # corresponding weights
+        # corresponding weights.
         self.add_edge('A', 'C', 15)
         self.add_edge('A', 'G', 11)
         self.add_edge('A', 'B', 2)
@@ -238,7 +249,7 @@ class Graph():
 
             #Iterates over each neighbor of the node in the graph.
             for neighbour in self.graph[s[0]]:
-                #Checks if neighbor is not in visited
+                #Checks if neighbor is not in visited.
                 if neighbour not in visited:
                     #Checks if neighbor is equal to search key.
                     if neighbour[0] == key:
@@ -265,18 +276,18 @@ class Graph():
         Bool - Idicates whether the node was found.
 
         """
-        #If search key is in visited return true
+        #If search key is in visited return true.
         if key in visited:
             return(True)
         if node not in visited:
 
-            #Add current node to visited
+            #Add current node to visited.
             visited.add(node)
             for neighbour in self.graph[node]:
-                #Perform DFS on neighbor (Recursion)
+                #Perform DFS on neighbor (Recursion).
                 self.dfs(neighbour[0], key, visited)
 
-                #If search key is in visited return true
+                #If search key is in visited return true.
                 if key in visited:
                     return(True)
 
@@ -294,38 +305,41 @@ class Graph():
         Int - starting vertex in graph
 
         Output:
-        Dict - list of minimum distances between starting vertex and other
+        Dict - list of minimum distances between starting vertex and 
+        other
                vertices.
         """
 
-        #List to keep shortest paths, all entries initialised to infinity
+        #List to keep shortest paths, all entries initialised to 
+        #infinity.
         D = {v:float('inf') for v in range(self.size)}
         D[start_vertex] = 0
 
-        #Create a priority queue
+        #Create a priority queue.
         pq = PriorityQueue()
-        #Put the starting vertex in the priority queue
+        #Put the starting vertex in the priority queue.
         pq.put((0, start_vertex))
 
-        #while the priority queue is not empty analyse each vertex
+        #While the priority queue is not empty analyse each vertex.
         while not pq.empty():
             (dist, current_vertex) = pq.get()
             #set current vertex to visited
             self.visited.append(current_vertex)
 
-            #Iterate over each of the current vertices neighbors
+            #Iterate over each of the current vertices neighbors.
             for neighbor in range(self.size):
-                if self.adjMatrix[current_vertex][neighbor] != -1:
-                    #Find the distance between current vertex & neighbor
-                    distance = self.adjMatrix[current_vertex][neighbor]
+                if self.adj_matrix[current_vertex][neighbor] != -1:
+                    #Find the distance between current vertex & 
+                    #neighbor.
+                    distance = self.adj_matrix[current_vertex][neighbor]
                     #If not visited compare old cost to new cost 
                     if neighbor not in self.visited:
                         #Find old cost and new cost
                         old_cost = D[neighbor]
                         new_cost = D[current_vertex] + distance
                         if new_cost < old_cost:
-                            #If new cost lower the neighbor and its cost in the
-                            #priority queue.
+                            #If new cost lower the neighbor and its 
+                            #cost in the priority queue.
                             pq.put((new_cost, neighbor))
                             D[neighbor] = new_cost
         return D
@@ -333,65 +347,67 @@ class Graph():
     def find_min_distance(self, source, destination) -> int:
         """
         Finds the minimum distance from the source to all other nodes
-        using Diskstra's algorithm. Then returns the minimum weight distance 
-        for the given destination node.
+        using Diskstra's algorithm. Then returns the minimum weight 
+        distance for the given destination node.
 
         Input:
         source: str - representing city - 'A'
         destination: - str - representing city - 'A'
 
         Output:
-        Int - Minimum weight distance between the given source and destination.
+        Int - Minimum weight distance between the given source and 
+        destination.
         """
 
-        d = self.dijkstra(self.convertLetter(source))
-        destination = self.convertLetter(destination)
+        d = self.dijkstra(self.convert_letter(source))
+        destination = self.convert_letter(destination)
         return(d[destination])
 
 
     def prims_mst(self, lock) -> None:
         """
-        Finds the minimum spanning tree from the adjacency matrix stored in the
-        object using Prim's algorithm. Prints the minimum spanning tree in a 
-        readable format.
+        Finds the minimum spanning tree from the adjacency matrix 
+        stored in the object using Prim's algorithm. Prints the 
+        minimum spanning tree in a readable format.
         
         """
-        # Define infinity variable
+        # Define infinity variable.
         infinity = float('inf')
         
-        # Selected node list
+        # Selected node list.
         selected_nodes = [False for node in range(self.size)]
 
-        # MST matrix
+        # MST matrix.
         result = [[0 for column in range(self.size)] 
                     for row in range(self.size)]
         
         index = 0
         
-        # Keep looking while there are nodes that are not included in the MST.
+        # Keep looking while there are nodes that are not included in 
+        # the MST.
         while(False in selected_nodes):
 
-            # Use inifinity as minimum
+            # Use inifinity as minimum.
             minimum = infinity
 
-            # Start Node
+            # Iinitialise start and end Node.
             start = 0
-
-            # End Node
             end = 0
 
             for i in range(self.size):
-                # Inspect node if its part of the MST
+                # Inspect node if its part of the MST.
                 if selected_nodes[i]:
                     for j in range(self.size):
-                        # If Node has a path to the ending Node AND is not 
-                        # already in the MST
-                        if (self.adjMatrix[i][j]>0 and not selected_nodes[j] ):  
-                            # If the weighted path is less than the minimum.
-                            if self.adjMatrix[i][j] < minimum:
-                                # Sets new minimum weight and the starting and 
-                                # end vertex.
-                                minimum = self.adjMatrix[i][j]
+                        # If Node has a path to the ending Node AND is 
+                        # not already in the MST.
+                        if (self.adj_matrix[i][j]>0 and not 
+                            selected_nodes[j] ):  
+                            # If the weighted path is less than the 
+                            # minimum.
+                            if self.adj_matrix[i][j] < minimum:
+                                # Sets new minimum weight and the 
+                                # starting and end vertex.
+                                minimum = self.adj_matrix[i][j]
                                 start, end = i, j
             
             # Ending vertex is already selected.
@@ -409,25 +425,26 @@ class Graph():
 
         total = total = 0
         mst = result
-        #Locking
+        #Locking the thread.
         lock.acquire()
-        # Loops through MST list and the item in the MST and prints values.
+        # Loops through MST list and the item in the MST and prints 
+        # values.
         print("\nPrim's Minimum Spanning Tree:\n")
         for i in range(len(mst)):
             for j in range(0+i, len(mst)):
                 if mst[i][j] != 0:
-                    print(f"{self.convertNo(i)} - {self.convertNo(j)}:"
+                    print(f"{self.convert_no(i)} - {self.convert_no(j)} - "
                      f"{mst[i][j]}")
                     total = total + mst[i][j]
         print(f"Total weight of MST: {total}")
-        #Unlocking
+        #Unlocking the thread.
         lock.release()
 
 
     def find_subtree(self, parent, i) -> int:
         """
-        Using recursion searches the parrent array and finds the root node 
-        of a subtree cotaining node "i"
+        Using recursion searches the parrent array and finds the root 
+        node of a subtree cotaining node "i".
 
         Output
         Int - root node
@@ -440,28 +457,28 @@ class Graph():
     # Connects subtrees containing nodes `x` and `y`
     def connect_subtrees(self, parent, subtree_sizes, x, y) -> None:
         """
-        Connects two subtrees with nodes cotaining 'x' and 'y'
+        Connects two subtrees with nodes cotaining 'x' and 'y'.
 
         """
         #Finds the subtrees of each node.
-        xroot = self.find_subtree(parent, x)
-        yroot = self.find_subtree(parent, y)
+        x_root = self.find_subtree(parent, x)
+        y_root = self.find_subtree(parent, y)
 
         #Compares the sizes and connects smaller subtree to larger one.
-        if subtree_sizes[xroot] < subtree_sizes[yroot]:
-            parent[xroot] = yroot
-        elif subtree_sizes[xroot] > subtree_sizes[yroot]:
-            parent[yroot] = xroot
+        if subtree_sizes[x_root] < subtree_sizes[y_root]:
+            parent[x_root] = y_root
+        elif subtree_sizes[x_root] > subtree_sizes[y_root]:
+            parent[y_root] = x_root
         else:
-            parent[yroot] = xroot
-            subtree_sizes[xroot] += 1
+            parent[y_root] = x_root
+            subtree_sizes[x_root] += 1
 
 
     def kruskals_mst(self, lock) -> None:
         """
         Finds the minimum spanning tree using Kruskals alrogithm.
-        Uses a Lock to syncronise the thread and prints the minimum spanning
-        tree in a readable format.
+        Uses a Lock to syncronise the thread and prints the minimum 
+        spanning tree in a readable format.
         """
         #Initialises variables
         result_tree = []
@@ -471,7 +488,7 @@ class Graph():
         subtree_sizes = [] # Auxiliary array
 
         # Uses weight to sorts the edges.
-        self.kGraph = sorted(self.kGraph, key=lambda item: item[2])
+        self.krusk_graph = sorted(self.krusk_graph, key=lambda item: item[2])
 
         # Initialise parent and subtree array.
         for node in range(self.size):
@@ -479,51 +496,52 @@ class Graph():
             subtree_sizes.append(0)
 
  
-        # Number of MST edges is always (total edges - 1)
+        # Number of MST edges is always (total edges - 1).
         while no_edges < (self.size - 1):
             # Pick edge with smallest weight.
-            node1, node2, weight = self.kGraph[iterator]
+            node1, node2, weight = self.krusk_graph[iterator]
             iterator = iterator + 1
 
-            #Finds the subtree
+            #Finds the subtree.
             x = self.find_subtree(parent, node1)
             y = self.find_subtree(parent, node2)
-            #adds the edge to the result tree if conditions are met.
+            #Adds the edge to the result tree if conditions are met.
             if x != y:
                 no_edges = no_edges + 1
                 result_tree.append([node1, node2, weight])
                 self.connect_subtrees(parent, subtree_sizes, x, y)
-        #Locking
+        #Locks the thread.
         lock.acquire()
         total = 0
         # Print the resulting MST
         print("\nKruskal's Minimum Spanning Tree:\n")
         for node1, node2, weight in result_tree:
-            print(f"{self.convertNo(node1)} - {self.convertNo(node2)} - {weight}")
+            print(f"{self.convert_no(node1)} - {self.convert_no(node2)} - "
+            f"{weight}")
             total = total + weight
 
         print(f"Total weight of MST: {total}")
-        #Unlocking
+        #Unlocks the thread.
         lock.release()
 
 
     def spanningTree(self) -> None:
         """
-        Creates 2 threads one for Prim's algorithm and the other for Kruskal's
-        algorithm to find the minimum spanning tree. 
+        Creates 2 threads one for Prim's algorithm and the other for 
+        Kruskal's algorithm to find the minimum spanning tree. 
         The 2 threads are run simultaneously and synchronised using
-        the Lock method to give a easily readable output for each of the
+        the Lock method, to give a readable output for each of the
         algorithms. 
 
         """
-        #Creates a lock
+        #Creates a lock.
         lock = threading.Lock()
 
         #Creates both threads passing the lock as an argument.
         kruskals = threading.Thread(target=self.kruskals_mst, args = (lock,))
         prims = threading.Thread(target=self.prims_mst, args=(lock,))
 
-        #Starts the threads
+        #Starts the threads.
         kruskals.start()
         prims.start()
         

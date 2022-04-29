@@ -1,19 +1,18 @@
 from credential import Credential
 from graph import Graph
 from credential import Credential
-import sys
 
 class MainProject(Graph, Credential):
     def __init__(self) -> None:
-        self.graph = {}  #create empty adjacency list
+        self.graph = {}  #create empty adjacency list.
         self.vertices_no = 0
-        self.adjMatrix = [] #create empty adjacency matrix
-        self.kGraph = [] #create an empty list for kruskals graph
-        self.visited = [] #list for visited vertices for Dijkstra’s algorithm
-        self.size = 11 #Amount of vertices in graph
-        #Sets all values in adjacency matrix to -1
+        self.adj_matrix = [] #Create empty adjacency matrix.
+        self.krusk_graph = [] #Create an empty list for kruskals graph.
+        self.visited = [] #List for visited vertices for Dijkstra’s. 
+        self.size = 11 #Amount of vertices in graph.
+        #Sets all values in adjacency matrix to -1.
         for i in range(self.size):
-            self.adjMatrix.append([-1 for i in range(self.size)])
+            self.adj_matrix.append([-1 for i in range(self.size)])
 
 
     def login(self) -> None:
@@ -22,15 +21,16 @@ class MainProject(Graph, Credential):
         
         """
 
-        #Create username and password linked lists using inherited method
+        #Create username and password linked lists using inherited 
+        # method.
         self.create_link_lists()
 
-        #Log in terminal and user input
+        #Log in terminal and user input.
         print("\nWelcome to the program, please enter your login details:")
         username = input("Username: ")
         password = input("Password: ")
 
-        #validate username and password using inherited method
+        #Validate username and password using inherited method.
         if self.validate(username, password):
 
             try:
@@ -44,19 +44,22 @@ class MainProject(Graph, Credential):
 
     def showFunctionality(self) -> None:
         """
-        Displays a list of citys & the menu for the functionality of the 
-        program
+        Displays a list of citys & the menu for the functionality of 
+        the program.
         """
-        #Creates the various interpretations of the graphs needed for the 
-        #algorithms
+        #Creates the various interpretations of the graphs needed for 
+        #the algorithms.
 
         self.create_city_graph()
         self.create_city_matrix()
-        self.print_city_list()
         self.create_krusk_graph()
 
+        #Prints the list of citys for the user to see.
+        self.print_city_list()
+
         #Displays Menu
-        #While loop to keep the program running untill the user decides to exit.
+        #While loop to keep the program running untill the user decides 
+        #to exit.
         menuchoice = True
         while menuchoice == True:
             print("\nMenu:")
@@ -75,13 +78,15 @@ class MainProject(Graph, Credential):
 
     def menu_choice(self, menu_input) -> bool:
         """
-        Allows the user to make a choice from the menu by taking an input
+        Allows the user to make a choice from the menu by taking an 
+        input.
+
         Input:
         menu_input: int between 1-4 
         
         """
 
-        #Decides what method to run based on users input
+        #Decides what method to run based on users input.
         if int(menu_input) == 1:
             return(self.search_city())
         elif int(menu_input) == 2:
@@ -126,16 +131,18 @@ class MainProject(Graph, Credential):
         
         """
 
-        #Takes the users input via keybaord entry
+        #Takes the users input via keybaord entry.
         source = input("\nPlease enter source city: ")
         destination = input("Please enter destination city: ")
         
-        #Searchs the graph make sure the source input entered is a valid vertex
+        #Searchs the graph make sure the source input entered is a 
+        #valid vertex.
         if self.search_vertex(source) == False:
-            (print("Source city doesnt exist, please try again"))
-            return(1)
+            (print("\nSource city doesnt exist, please try again"))
+            return(True)
 
-        #User decides via keyboard input which search type to use BFS or DFS
+        #User decides via keyboard input which search type to use BFS 
+        # or DFS.
         search_type = input("Please enter search type 'BFS' or 'DFS': ")
 
         if search_type == "dfs" or search_type == "DFS":
@@ -147,7 +154,7 @@ class MainProject(Graph, Credential):
             print("\nPlease enter a correct search type")
             return(1)
 
-        #Prints the results of the search to the command line
+        #Prints the results of the search to the command line.
         if result == True:
             print(f"\nSource: {source}, Destination: {destination}",
                     "--> Reachable")
@@ -155,7 +162,7 @@ class MainProject(Graph, Credential):
             print(f"\nSource: {source}, Destination: {destination}",
                     " --> Unreachable")
 
-        #Displays exit menu
+        #Displays the exit menu.
         return(self.exit_menu())
 
 
@@ -169,19 +176,19 @@ class MainProject(Graph, Credential):
         
         """
 
-        #Takes the users input via keybaord entry
+        #Takes the users input via keybaord entry.
         source = input("\nPlease enter source city: ")
         destination = input("Please enter destination city: ")
         
         #Searchs the graph make sure the source and destination
-        #input entered is a valid vertex
+        #input entered is a valid vertex.
         if self.search_vertex(source) == False:
-            (print("Source city doesnt exist, please try again"))
-            return(2)
+            (print("\nSource city doesnt exist, please try again"))
+            return(True)
         
         elif self.search_vertex(destination) == False:
-            (print("Destination city doesnt exist, please try again"))
-            return(2)
+            (print("\nDestination city doesnt exist, please try again"))
+            return(True)
 
         else:
             #Implements find_min_distance and Dijkstra’s method to find
@@ -192,21 +199,22 @@ class MainProject(Graph, Credential):
             self.visited = []
 
         
-        #Displays exit menu
+        #Displays the exit menu.
         return(self.exit_menu())
 
     
     def display_mst_algos(self) -> bool:
         """
-        Allows the user to run the spanning tree method which runs two threads.
-        One for Prim's algorithm and the other for Kruskal's algorithm. 
+        Allows the user to run the spanning tree method which runs two 
+        threads. One for Prim's algorithm and the other for Kruskal's 
+        algorithm. 
 
         Returns:
         Boolean
         
         """
         self.spanningTree()
-        #Displays exit menu
+        #Displays the exit menu.
         return(self.exit_menu())
 
 
